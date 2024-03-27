@@ -27,8 +27,8 @@ void processInput(GLFWwindow *window);
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods);
 
 // settings
-const unsigned int SCR_WIDTH = 1600;
-const unsigned int SCR_HEIGHT = 720;
+const unsigned int SCR_WIDTH = 1920;
+const unsigned int SCR_HEIGHT = 1080;
 
 // camera
 
@@ -162,15 +162,18 @@ int main() {
     // build and compile shaders
     // -------------------------
     Shader ourShader("resources/shaders/2.model_lighting.vs", "resources/shaders/2.model_lighting.fs");
-
+//resources/objects/m2020_zcam_--__rocky_top_sol_466/scene.gltf
     // load models
     // -----------
-    Model ourModel("resources/objects/m2020_zcam_--__rocky_top_sol_466/scene.gltf");
+    Model ourModel("resources/objects/tree/scene.gltf");
     ourModel.SetShaderTextureNamePrefix("material.");
+
+    Model zemlja2("resources/objects/ground/scene.gltf");
+    zemlja2.SetShaderTextureNamePrefix("material.");
 
     PointLight& pointLight = programState->pointLight;
     pointLight.position = glm::vec3(4.0f, 4.0, 0.0);
-    pointLight.ambient = glm::vec3(0.1, 0.1, 0.1);
+    pointLight.ambient = glm::vec3(0.5, 0.5, 0.5);
     pointLight.diffuse = glm::vec3(1.0, 1.0, 1.0);
     pointLight.specular = glm::vec3(1.0, 1.0, 1.0);
 
@@ -224,11 +227,19 @@ int main() {
         // render the loaded model
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model,
-                               programState->backpackPosition); // translate it down so it's at the center of the scene
-        model = glm::rotate(model, glm::radians(-5.0f), glm::vec3(0, 1.0f, 0));
+                               glm::vec3(10.0f, 0.66f, 1.0f)); // translate it down so it's at the center of the scene
+        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0, 0.0f, 1.0f));
         model = glm::scale(model, glm::vec3(1.5f));    // it's a bit too big for our scene, so scale it down
         ourShader.setMat4("model", model);
         ourModel.Draw(ourShader);
+
+        glm::mat4 modelZemlja2 = glm::mat4(1.0f);
+        modelZemlja2 = glm::translate(modelZemlja2,
+                                     glm::vec3(1.0f, -.0f, 1.0f)); // translate it down so it's at the center of the scene
+        modelZemlja2 = glm::rotate(modelZemlja2, glm::radians(-90.0f), glm::vec3(1.0f,  0.0f, 0));
+        modelZemlja2 = glm::scale(modelZemlja2, glm::vec3(0.45f));    // it's a bit too big for our scene, so scale it down
+        ourShader.setMat4("model", modelZemlja2);
+        zemlja2.Draw(ourShader);
 
         if (programState->ImGuiEnabled)
             DrawImGui(programState);
