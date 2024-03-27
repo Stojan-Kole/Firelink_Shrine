@@ -1,0 +1,11 @@
+Model Information:
+* title:	M2020 ZCAM --  Rocky Top, Sol 466
+* source:	https://sketchfab.com/3d-models/m2020-zcam-rocky-top-sol-466-d04c81790460429299cdb9d2cce08cf6
+* author:	cdt59 (https://sketchfab.com/cdt59)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "M2020 ZCAM --  Rocky Top, Sol 466" (https://sketchfab.com/3d-models/m2020-zcam-rocky-top-sol-466-d04c81790460429299cdb9d2cce08cf6) by cdt59 (https://sketchfab.com/cdt59) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
