@@ -115,7 +115,7 @@ int main() {
 
     // glfw window creation
     // --------------------
-    GLFWwindow *window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
+    GLFWwindow *window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Wild West", NULL, NULL);
     if (window == NULL) {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
@@ -171,6 +171,9 @@ int main() {
     Model zemlja2("resources/objects/ground/scene.gltf");
     zemlja2.SetShaderTextureNamePrefix("material.");
 
+    Model lobanja("resources/objects/fox_skull_obj/Fox skull OBJ/fox_skull.obj");
+    lobanja.SetShaderTextureNamePrefix("material.");
+
     PointLight& pointLight = programState->pointLight;
     pointLight.position = glm::vec3(4.0f, 4.0, 0.0);
     pointLight.ambient = glm::vec3(0.5, 0.5, 0.5);
@@ -202,6 +205,8 @@ int main() {
 
         // render
         // ------
+
+
         glClearColor(programState->clearColor.r, programState->clearColor.g, programState->clearColor.b, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -224,6 +229,11 @@ int main() {
         ourShader.setMat4("projection", projection);
         ourShader.setMat4("view", view);
 
+
+        //Face culling
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+
         // render the loaded model
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model,
@@ -241,9 +251,16 @@ int main() {
         ourShader.setMat4("model", modelZemlja2);
         zemlja2.Draw(ourShader);
 
+        glm::mat4 modelLobanja = glm::mat4(1.0f);
+        modelLobanja = glm::translate(modelLobanja,
+                               glm::vec3(1.0f, 0.66f, 1.0f)); // translate it down so it's at the center of the scene
+       // modelLobanja = glm::rotate(modelLobanja, glm::radians(90.0f), glm::vec3(0, 0.0f, 1.0f));
+        modelLobanja = glm::scale(modelLobanja, glm::vec3(0.012f));    // it's a bit too big for our scene, so scale it down
+        ourShader.setMat4("model", modelLobanja);
+        lobanja.Draw(ourShader);
+
         if (programState->ImGuiEnabled)
             DrawImGui(programState);
-
 
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
