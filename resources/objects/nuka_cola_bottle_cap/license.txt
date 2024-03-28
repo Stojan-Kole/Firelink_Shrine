@@ -1,0 +1,11 @@
+Model Information:
+* title:	Nuka Cola Bottle Cap
+* source:	https://sketchfab.com/3d-models/nuka-cola-bottle-cap-5c4f018f8d1344f2a214f6c3fbd25c4d
+* author:	Yogensia (https://sketchfab.com/yogensia)
+
+Model License:
+* license type:	CC-BY-NC-SA-4.0 (http://creativecommons.org/licenses/by-nc-sa/4.0/)
+* requirements:	Author must be credited. No commercial use. Modified versions must have the same license.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Nuka Cola Bottle Cap" (https://sketchfab.com/3d-models/nuka-cola-bottle-cap-5c4f018f8d1344f2a214f6c3fbd25c4d) by Yogensia (https://sketchfab.com/yogensia) licensed under CC-BY-NC-SA-4.0 (http://creativecommons.org/licenses/by-nc-sa/4.0/)

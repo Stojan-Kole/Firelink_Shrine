@@ -1,0 +1,11 @@
+Model Information:
+* title:	NCR Veteran Ranger [Fallout 4]
+* source:	https://sketchfab.com/3d-models/ncr-veteran-ranger-fallout-4-c6dcab30b1b14701bd3353697bfcc930
+* author:	Moonify (https://sketchfab.com/ironw699)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "NCR Veteran Ranger [Fallout 4]" (https://sketchfab.com/3d-models/ncr-veteran-ranger-fallout-4-c6dcab30b1b14701bd3353697bfcc930) by Moonify (https://sketchfab.com/ironw699) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

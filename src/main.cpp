@@ -168,11 +168,26 @@ int main() {
     Model ourModel("resources/objects/tree/scene.gltf");
     ourModel.SetShaderTextureNamePrefix("material.");
 
+    Model drvo2("resources/objects/old_tree/scene.gltf");
+    drvo2.SetShaderTextureNamePrefix("material.");
+
     Model zemlja2("resources/objects/ground/scene.gltf");
     zemlja2.SetShaderTextureNamePrefix("material.");
 
     Model lobanja("resources/objects/fox_skull_obj/Fox skull OBJ/fox_skull.obj");
     lobanja.SetShaderTextureNamePrefix("material.");
+
+    Model vatra("resources/objects/smoldering_logs_red_light_bonfire_l/scene.gltf");
+    vatra.SetShaderTextureNamePrefix("material.");
+
+    Model zbun("resources/objects/tumbleweed/scene.gltf");
+    zbun.SetShaderTextureNamePrefix("material.");
+
+    Model ranger("resources/objects/ncr_veteran_ranger_fallout_4/scene.gltf");
+    ranger.SetShaderTextureNamePrefix("material.");
+
+    Model cep("resources/objects/nuka_cola_bottle_cap/scene.gltf");
+    cep.SetShaderTextureNamePrefix("material.");
 
     PointLight& pointLight = programState->pointLight;
     pointLight.position = glm::vec3(4.0f, 4.0, 0.0);
@@ -239,9 +254,17 @@ int main() {
         model = glm::translate(model,
                                glm::vec3(10.0f, 0.66f, 1.0f)); // translate it down so it's at the center of the scene
         model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0, 0.0f, 1.0f));
-        model = glm::scale(model, glm::vec3(1.5f));    // it's a bit too big for our scene, so scale it down
+        model = glm::scale(model, glm::vec3(2.0f));    // it's a bit too big for our scene, so scale it down
         ourShader.setMat4("model", model);
         ourModel.Draw(ourShader);
+
+        glm::mat4 modelDrvo2 = glm::mat4(1.0f);
+        modelDrvo2 = glm::translate(modelDrvo2,
+                                      glm::vec3(-5.0f, 0.7f, 1.0f)); // translate it down so it's at the center of the scene
+        // modelDrvo2 = glm::rotate(modelDrvo2, glm::radians(90.0f), glm::vec3(0, 0.0f, 1.0f));
+        modelDrvo2 = glm::scale(modelDrvo2, glm::vec3(1.5f));    // it's a bit too big for our scene, so scale it down
+        ourShader.setMat4("model", modelDrvo2);
+        drvo2.Draw(ourShader);
 
         glm::mat4 modelZemlja2 = glm::mat4(1.0f);
         modelZemlja2 = glm::translate(modelZemlja2,
@@ -253,11 +276,43 @@ int main() {
 
         glm::mat4 modelLobanja = glm::mat4(1.0f);
         modelLobanja = glm::translate(modelLobanja,
-                               glm::vec3(1.0f, 0.66f, 1.0f)); // translate it down so it's at the center of the scene
+                               glm::vec3(1.0f, 0.7f, 1.0f)); // translate it down so it's at the center of the scene
        // modelLobanja = glm::rotate(modelLobanja, glm::radians(90.0f), glm::vec3(0, 0.0f, 1.0f));
         modelLobanja = glm::scale(modelLobanja, glm::vec3(0.012f));    // it's a bit too big for our scene, so scale it down
         ourShader.setMat4("model", modelLobanja);
         lobanja.Draw(ourShader);
+
+        glm::mat4 modelvatra = glm::mat4(1.0f);
+        modelvatra = glm::translate(modelvatra,
+                                      glm::vec3(1.0f, 0.66f, 3.0f)); // translate it down so it's at the center of the scene
+        // modelvatra = glm::rotate(modelvatra, glm::radians(90.0f), glm::vec3(0, 0.0f, 1.0f));
+        modelvatra = glm::scale(modelvatra, glm::vec3(1.5f));    // it's a bit too big for our scene, so scale it down
+        ourShader.setMat4("model", modelvatra);
+        vatra.Draw(ourShader);
+
+        glm::mat4 modelZbun = glm::mat4(1.0f);
+        modelZbun = glm::translate(modelZbun,
+                                    glm::vec3(1.0f, 1.76f, -7.0f)); // translate it down so it's at the center of the scene
+        // modelZbun = glm::rotate(modelZbun, glm::radians(90.0f), glm::vec3(0, 0.0f, 1.0f));
+        modelZbun = glm::scale(modelZbun, glm::vec3(0.17f));    // it's a bit too big for our scene, so scale it down
+        ourShader.setMat4("model", modelZbun);
+        zbun.Draw(ourShader);
+
+        glm::mat4 modelRanger = glm::mat4(1.0f);
+        modelRanger = glm::translate(modelRanger,
+                                   glm::vec3(1.0f, 0.76f, -3.0f));
+        modelRanger = glm::rotate(modelRanger, glm::radians(-30.0f), glm::vec3( 0.0f, 1.0f, 0.0f));
+        modelRanger = glm::scale(modelRanger, glm::vec3(0.04f));    // it's a bit too big for our scene, so scale it down
+        ourShader.setMat4("model", modelRanger);
+        ranger.Draw(ourShader);
+
+        glm::mat4 modelCep = glm::mat4(1.0f);
+        modelCep = glm::translate(modelCep,
+                                     glm::vec3(3.0f, 1.76f, -2.0f));
+        modelCep = glm::rotate(modelCep, glm::radians(-90.0f), glm::vec3( 1.0f, 0.0f, 0.0f));
+        modelCep = glm::scale(modelCep, glm::vec3(0.005f));    // it's a bit too big for our scene, so scale it down
+        ourShader.setMat4("model", modelCep);
+        cep.Draw(ourShader);
 
         if (programState->ImGuiEnabled)
             DrawImGui(programState);
