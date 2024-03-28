@@ -115,7 +115,7 @@ int main() {
 
     // glfw window creation
     // --------------------
-    GLFWwindow *window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Wild West", NULL, NULL);
+    GLFWwindow *window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Fallout", NULL, NULL);
     if (window == NULL) {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
@@ -158,6 +158,10 @@ int main() {
     // configure global opengl state
     // -----------------------------
     glEnable(GL_DEPTH_TEST);
+
+    //blending
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     // build and compile shaders
     // -------------------------
@@ -227,7 +231,7 @@ int main() {
 
         // don't forget to enable shader before setting uniforms
         ourShader.use();
-       // pointLight.position = glm::vec3(4.0 * cos(currentFrame), 4.0f, 4.0 * sin(currentFrame));
+        // pointLight.position = glm::vec3(4.0 * cos(currentFrame), 4.0f, 4.0 * sin(currentFrame));
         ourShader.setVec3("pointLight.position", pointLight.position);
         ourShader.setVec3("pointLight.ambient", pointLight.ambient);
         ourShader.setVec3("pointLight.diffuse", pointLight.diffuse);
@@ -260,7 +264,7 @@ int main() {
 
         glm::mat4 modelDrvo2 = glm::mat4(1.0f);
         modelDrvo2 = glm::translate(modelDrvo2,
-                                      glm::vec3(-5.0f, 0.7f, 1.0f)); // translate it down so it's at the center of the scene
+                                    glm::vec3(-5.0f, 0.7f, 1.0f)); // translate it down so it's at the center of the scene
         // modelDrvo2 = glm::rotate(modelDrvo2, glm::radians(90.0f), glm::vec3(0, 0.0f, 1.0f));
         modelDrvo2 = glm::scale(modelDrvo2, glm::vec3(1.5f));    // it's a bit too big for our scene, so scale it down
         ourShader.setMat4("model", modelDrvo2);
@@ -268,7 +272,7 @@ int main() {
 
         glm::mat4 modelZemlja2 = glm::mat4(1.0f);
         modelZemlja2 = glm::translate(modelZemlja2,
-                                     glm::vec3(1.0f, -.0f, 1.0f)); // translate it down so it's at the center of the scene
+                                      glm::vec3(1.0f, -.0f, 1.0f)); // translate it down so it's at the center of the scene
         modelZemlja2 = glm::rotate(modelZemlja2, glm::radians(-90.0f), glm::vec3(1.0f,  0.0f, 0));
         modelZemlja2 = glm::scale(modelZemlja2, glm::vec3(0.45f));    // it's a bit too big for our scene, so scale it down
         ourShader.setMat4("model", modelZemlja2);
@@ -276,15 +280,15 @@ int main() {
 
         glm::mat4 modelLobanja = glm::mat4(1.0f);
         modelLobanja = glm::translate(modelLobanja,
-                               glm::vec3(1.0f, 0.7f, 1.0f)); // translate it down so it's at the center of the scene
-       // modelLobanja = glm::rotate(modelLobanja, glm::radians(90.0f), glm::vec3(0, 0.0f, 1.0f));
+                                      glm::vec3(1.0f, 0.7f, 1.0f)); // translate it down so it's at the center of the scene
+        // modelLobanja = glm::rotate(modelLobanja, glm::radians(90.0f), glm::vec3(0, 0.0f, 1.0f));
         modelLobanja = glm::scale(modelLobanja, glm::vec3(0.012f));    // it's a bit too big for our scene, so scale it down
         ourShader.setMat4("model", modelLobanja);
         lobanja.Draw(ourShader);
 
         glm::mat4 modelvatra = glm::mat4(1.0f);
         modelvatra = glm::translate(modelvatra,
-                                      glm::vec3(1.0f, 0.66f, 3.0f)); // translate it down so it's at the center of the scene
+                                    glm::vec3(1.0f, 0.66f, 3.0f)); // translate it down so it's at the center of the scene
         // modelvatra = glm::rotate(modelvatra, glm::radians(90.0f), glm::vec3(0, 0.0f, 1.0f));
         modelvatra = glm::scale(modelvatra, glm::vec3(1.5f));    // it's a bit too big for our scene, so scale it down
         ourShader.setMat4("model", modelvatra);
@@ -292,7 +296,7 @@ int main() {
 
         glm::mat4 modelZbun = glm::mat4(1.0f);
         modelZbun = glm::translate(modelZbun,
-                                    glm::vec3(1.0f, 1.76f, -7.0f)); // translate it down so it's at the center of the scene
+                                   glm::vec3(1.0f, 1.76f, -7.0f)); // translate it down so it's at the center of the scene
         // modelZbun = glm::rotate(modelZbun, glm::radians(90.0f), glm::vec3(0, 0.0f, 1.0f));
         modelZbun = glm::scale(modelZbun, glm::vec3(0.17f));    // it's a bit too big for our scene, so scale it down
         ourShader.setMat4("model", modelZbun);
@@ -300,7 +304,7 @@ int main() {
 
         glm::mat4 modelRanger = glm::mat4(1.0f);
         modelRanger = glm::translate(modelRanger,
-                                   glm::vec3(1.0f, 0.76f, -3.0f));
+                                     glm::vec3(1.0f, 0.76f, -3.0f));
         modelRanger = glm::rotate(modelRanger, glm::radians(-30.0f), glm::vec3( 0.0f, 1.0f, 0.0f));
         modelRanger = glm::scale(modelRanger, glm::vec3(0.04f));    // it's a bit too big for our scene, so scale it down
         ourShader.setMat4("model", modelRanger);
@@ -308,7 +312,7 @@ int main() {
 
         glm::mat4 modelCep = glm::mat4(1.0f);
         modelCep = glm::translate(modelCep,
-                                     glm::vec3(3.0f, 1.76f, -2.0f));
+                                  glm::vec3(3.0f, 1.76f, -2.0f));
         modelCep = glm::rotate(modelCep, glm::radians(-90.0f), glm::vec3( 1.0f, 0.0f, 0.0f));
         modelCep = glm::scale(modelCep, glm::vec3(0.005f));    // it's a bit too big for our scene, so scale it down
         ourShader.setMat4("model", modelCep);
