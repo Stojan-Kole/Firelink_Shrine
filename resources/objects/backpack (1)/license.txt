@@ -1,0 +1,11 @@
+Model Information:
+* title:	Backpack
+* source:	https://sketchfab.com/3d-models/backpack-b9e73f29c3c54b06870cddc6ae4bf03b
+* author:	Elinor Quittner (https://sketchfab.com/elqui)
+
+Model License:
+* license type:	CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)
+* requirements:	Author must be credited. No commercial use.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Backpack" (https://sketchfab.com/3d-models/backpack-b9e73f29c3c54b06870cddc6ae4bf03b) by Elinor Quittner (https://sketchfab.com/elqui) licensed under CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)

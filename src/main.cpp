@@ -197,6 +197,14 @@ int main() {
     Model cep("resources/objects/nuka_cola_bottle_cap/scene.gltf");
     cep.SetShaderTextureNamePrefix("material.");
 
+    Model Ruksak("resources/objects/backpack (1)/scene.gltf");
+    Ruksak.SetShaderTextureNamePrefix("material.");
+
+    Model bobblehead("resources/objects/ncr_veteran_ranger_bobblehead/scene.gltf");
+    bobblehead.SetShaderTextureNamePrefix("material.");
+
+    Model pipBoy("resources/objects/retro-modernized_pip_boy_editable_screen/scene.gltf");
+    pipBoy.SetShaderTextureNamePrefix("material.");
 
     //skyBox
 
@@ -253,8 +261,8 @@ int main() {
     pointLight.specular = glm::vec3(1.0, 1.0, 1.0);
 
     pointLight.constant = 1.0f;
-    pointLight.linear = 0.0f;
-    pointLight.quadratic = 0.0f;
+    pointLight.linear = 0.005f;
+    pointLight.quadratic = 0.005f;
 
 
     // skybox vao
@@ -269,12 +277,12 @@ int main() {
 
     vector<std::string> faces
             {
-                    FileSystem::getPath("resources/textures/sky4/px.png"),
-                    FileSystem::getPath("resources/textures/sky4/nx.png"),
-                    FileSystem::getPath("resources/textures/sky4/py.png"),
-                    FileSystem::getPath("resources/textures/sky4/ny.png"),
-                    FileSystem::getPath("resources/textures/sky4/pz.png"),
-                    FileSystem::getPath("resources/textures/sky4/nz.png")
+                    FileSystem::getPath("resources/textures/skybox/cocoa_rt.jpg"),
+                    FileSystem::getPath("resources/textures/skybox/cocoa_lf.jpg"),
+                    FileSystem::getPath("resources/textures/skybox/cocoa_dn.jpg"),
+                    FileSystem::getPath("resources/textures/skybox/cocoa_up.jpg"),
+                    FileSystem::getPath("resources/textures/skybox/cocoa_bk.jpg"),
+                    FileSystem::getPath("resources/textures/skybox/cocoa_ft.jpg")
             };
     unsigned int cubemapTexture = loadCubemap(faces);
 
@@ -328,9 +336,10 @@ int main() {
         glCullFace(GL_BACK);
 
         // render the loaded model
+        //prvo drvo
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model,
-                               glm::vec3(10.0f, 0.66f, 1.0f)); // translate it down so it's at the center of the scene
+                               glm::vec3(10.0f, 0.74f, 1.0f)); // translate it down so it's at the center of the scene
         model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0, 0.0f, 1.0f));
         model = glm::scale(model, glm::vec3(2.0f));    // it's a bit too big for our scene, so scale it down
         ourShader.setMat4("model", model);
@@ -338,8 +347,8 @@ int main() {
 
         glm::mat4 modelDrvo2 = glm::mat4(1.0f);
         modelDrvo2 = glm::translate(modelDrvo2,
-                                    glm::vec3(-5.0f, 0.7f, 1.0f)); // translate it down so it's at the center of the scene
-        // modelDrvo2 = glm::rotate(modelDrvo2, glm::radians(90.0f), glm::vec3(0, 0.0f, 1.0f));
+                                    glm::vec3(-5.0f, 0.4f, 1.0f)); // translate it down so it's at the center of the scene
+         modelDrvo2 = glm::rotate(modelDrvo2, glm::radians(180.0f), glm::vec3(0, 1.0f, 0.0f));
         modelDrvo2 = glm::scale(modelDrvo2, glm::vec3(1.5f));    // it's a bit too big for our scene, so scale it down
         ourShader.setMat4("model", modelDrvo2);
         drvo2.Draw(ourShader);
@@ -348,13 +357,13 @@ int main() {
         modelZemlja2 = glm::translate(modelZemlja2,
                                       glm::vec3(1.0f, -.0f, 1.0f)); // translate it down so it's at the center of the scene
         modelZemlja2 = glm::rotate(modelZemlja2, glm::radians(-90.0f), glm::vec3(1.0f,  0.0f, 0));
-        modelZemlja2 = glm::scale(modelZemlja2, glm::vec3(0.45f));    // it's a bit too big for our scene, so scale it down
+        modelZemlja2 = glm::scale(modelZemlja2, glm::vec3(0.55f));    // it's a bit too big for our scene, so scale it down
         ourShader.setMat4("model", modelZemlja2);
         zemlja2.Draw(ourShader);
 
         glm::mat4 modelLobanja = glm::mat4(1.0f);
         modelLobanja = glm::translate(modelLobanja,
-                                      glm::vec3(1.0f, 0.7f, 1.0f)); // translate it down so it's at the center of the scene
+                                      glm::vec3(1.0f, 0.85f, 1.0f)); // translate it down so it's at the center of the scene
         // modelLobanja = glm::rotate(modelLobanja, glm::radians(90.0f), glm::vec3(0, 0.0f, 1.0f));
         modelLobanja = glm::scale(modelLobanja, glm::vec3(0.012f));    // it's a bit too big for our scene, so scale it down
         ourShader.setMat4("model", modelLobanja);
@@ -362,7 +371,7 @@ int main() {
 
         glm::mat4 modelvatra = glm::mat4(1.0f);
         modelvatra = glm::translate(modelvatra,
-                                    glm::vec3(1.0f, 0.66f, 3.0f)); // translate it down so it's at the center of the scene
+                                    glm::vec3(1.0f, 0.72f, 3.0f)); // translate it down so it's at the center of the scene
         // modelvatra = glm::rotate(modelvatra, glm::radians(90.0f), glm::vec3(0, 0.0f, 1.0f));
         modelvatra = glm::scale(modelvatra, glm::vec3(1.5f));    // it's a bit too big for our scene, so scale it down
         ourShader.setMat4("model", modelvatra);
@@ -370,7 +379,7 @@ int main() {
 
         glm::mat4 modelZbun = glm::mat4(1.0f);
         modelZbun = glm::translate(modelZbun,
-                                   glm::vec3(1.0f, 1.76f, -7.0f)); // translate it down so it's at the center of the scene
+                                   glm::vec3(1.0f, 1.84f, -7.0f)); // translate it down so it's at the center of the scene
         // modelZbun = glm::rotate(modelZbun, glm::radians(90.0f), glm::vec3(0, 0.0f, 1.0f));
         modelZbun = glm::scale(modelZbun, glm::vec3(0.17f));    // it's a bit too big for our scene, so scale it down
         ourShader.setMat4("model", modelZbun);
@@ -378,7 +387,7 @@ int main() {
 
         glm::mat4 modelRanger = glm::mat4(1.0f);
         modelRanger = glm::translate(modelRanger,
-                                     glm::vec3(1.0f, 0.76f, -3.0f));
+                                     glm::vec3(1.0f, 1.06f, -3.0f));
         modelRanger = glm::rotate(modelRanger, glm::radians(-30.0f), glm::vec3( 0.0f, 1.0f, 0.0f));
         modelRanger = glm::scale(modelRanger, glm::vec3(0.04f));    // it's a bit too big for our scene, so scale it down
         ourShader.setMat4("model", modelRanger);
@@ -386,11 +395,35 @@ int main() {
 
         glm::mat4 modelCep = glm::mat4(1.0f);
         modelCep = glm::translate(modelCep,
-                                  glm::vec3(3.0f, 1.76f, -2.0f));
+                                  glm::vec3(3.0f, 1.1f, -2.0f));
         modelCep = glm::rotate(modelCep, glm::radians(-90.0f), glm::vec3( 1.0f, 0.0f, 0.0f));
         modelCep = glm::scale(modelCep, glm::vec3(0.005f));    // it's a bit too big for our scene, so scale it down
         ourShader.setMat4("model", modelCep);
         cep.Draw(ourShader);
+
+        glm::mat4 modelRuksak = glm::mat4(1.0f);
+        modelRuksak = glm::translate(modelRuksak,
+                                  glm::vec3(-1.2f, 1.0f, 4.0f));
+        modelRuksak = glm::rotate(modelRuksak, glm::radians(150.0f), glm::vec3( 0.0f, 1.0f, 0.0f));
+        modelRuksak = glm::scale(modelRuksak, glm::vec3(0.01f));    // it's a bit too big for our scene, so scale it down
+        ourShader.setMat4("model", modelRuksak);
+        Ruksak.Draw(ourShader);
+
+        glm::mat4 modelBoblehead = glm::mat4(1.0f);
+        modelBoblehead = glm::translate(modelBoblehead,
+                                  glm::vec3(-1.2f, 1.0f, 4.3f));
+        modelBoblehead = glm::rotate(modelBoblehead, glm::radians(-30.0f), glm::vec3( 0.0f, 1.0f, 0.0f));
+        modelBoblehead = glm::scale(modelBoblehead, glm::vec3(0.005f));    // it's a bit too big for our scene, so scale it down
+        ourShader.setMat4("model", modelBoblehead);
+        bobblehead.Draw(ourShader);
+
+        glm::mat4 modelPipBoy = glm::mat4(1.0f);
+        modelPipBoy = glm::translate(modelPipBoy,
+                                        glm::vec3(-0.5f, 0.67f, 5.0f));
+        //modelPipBoy = glm::rotate(modelPipBoy, glm::radians(-30.0f), glm::vec3( 0.0f, 1.0f, 0.0f));
+        modelPipBoy = glm::scale(modelPipBoy, glm::vec3(0.2f));    // it's a bit too big for our scene, so scale it down
+        ourShader.setMat4("model", modelPipBoy);
+        pipBoy.Draw(ourShader);
 
 
         // skybox cube
