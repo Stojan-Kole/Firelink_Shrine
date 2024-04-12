@@ -28,6 +28,8 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 
 unsigned int loadCubemap(vector<std::string> faces);
 
+unsigned int loadTexture(char const *path);
+
 // settings
 const unsigned int SCR_WIDTH = 1920;
 const unsigned int SCR_HEIGHT = 1080;
@@ -53,6 +55,13 @@ struct PointLight {
     float quadratic;
 };
 
+struct DirLight {
+    glm::vec3 direction;
+    glm::vec3 ambient;
+    glm::vec3 diffuse;
+    glm::vec3 specular;
+};
+
 struct ProgramState {
     glm::vec3 clearColor = glm::vec3(0);
     bool ImGuiEnabled = false;
@@ -61,6 +70,7 @@ struct ProgramState {
     glm::vec3 backpackPosition = glm::vec3(0.0f);
     float backpackScale = 1.0f;
     PointLight pointLight;
+    DirLight dirLight;
     ProgramState()
             : camera(glm::vec3(0.0f, 0.0f, 3.0f)) {}
 
@@ -170,7 +180,8 @@ int main() {
 
     Shader ourShader("resources/shaders/2.model_lighting.vs", "resources/shaders/2.model_lighting.fs");
     Shader skyboxShader("resources/shaders/skybox.vs", "resources/shaders/skybox.fs");
-
+    Shader zastava("resources/shaders/Zastava.vs","resources/shaders/Zastava.fs");
+    Shader blending("resources/shaders/blending.vs", "resources/shaders/blending.fs");
     // load models
     // -----------
     Model ourModel("resources/objects/tree/scene.gltf");
@@ -205,6 +216,43 @@ int main() {
 
     Model pipBoy("resources/objects/retro-modernized_pip_boy_editable_screen/scene.gltf");
     pipBoy.SetShaderTextureNamePrefix("material.");
+
+    float flagVertices[] = {
+            //      vertex           texture        normal
+            60.0f, -20.0f,  30.0f,  1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+            -60.0f, -20.0f, -30.0f,  0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+            -60.0f, -20.0f,  30.0f,  0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+
+
+            60.0f, -20.0f,  30.0f,  1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+            60.0f, -20.0f, -30.0f,  1.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+            -60.0f, -20.0f, -30.0f,  0.0f, 1.0f, 0.0f, 1.0f, 0.0f
+    };
+
+
+    unsigned int flagVAO, flagVBO;
+    glGenVertexArrays(1, &flagVAO);
+    glGenBuffers(1, &flagVBO);
+
+    glBindVertexArray(flagVAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, flagVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(flagVertices), &flagVertices, GL_STATIC_DRAW);
+
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(5 * sizeof(float)));
+
+    glBindVertexArray(0);
+
+    unsigned int flagTexture = loadTexture("resources/textures/41v7zxV8B4L._AC_.jpg");
+    zastava.use();
+    zastava.setInt("texture1", 0);
 
     //skyBox
 
@@ -261,8 +309,8 @@ int main() {
     pointLight.specular = glm::vec3(1.0, 1.0, 1.0);
 
     pointLight.constant = 1.0f;
-    pointLight.linear = 0.005f;
-    pointLight.quadratic = 0.005f;
+    pointLight.linear = 0.2f;
+    pointLight.quadratic = 0.2f;
 
 
     // skybox vao
@@ -277,28 +325,80 @@ int main() {
 
     vector<std::string> faces
             {
-                    FileSystem::getPath("resources/textures/skybox/cocoa_rt.jpg"),
-                    FileSystem::getPath("resources/textures/skybox/cocoa_lf.jpg"),
-                    FileSystem::getPath("resources/textures/skybox/cocoa_dn.jpg"),
-                    FileSystem::getPath("resources/textures/skybox/cocoa_up.jpg"),
-                    FileSystem::getPath("resources/textures/skybox/cocoa_bk.jpg"),
-                    FileSystem::getPath("resources/textures/skybox/cocoa_ft.jpg")
+                    FileSystem::getPath("resources/textures/skybox/raspberry_rt.jpg"),
+                    FileSystem::getPath("resources/textures/skybox/raspberry_lf.jpg"),
+                    FileSystem::getPath("resources/textures/skybox/raspberry_dn.jpg"),
+                    FileSystem::getPath("resources/textures/skybox/raspberry_up.jpg"),
+                    FileSystem::getPath("resources/textures/skybox/raspberry_bk.jpg"),
+                    FileSystem::getPath("resources/textures/skybox/raspberry_ft.jpg")
             };
     unsigned int cubemapTexture = loadCubemap(faces);
 
     skyboxShader.use();
     skyboxShader.setInt("skybox", 0);
+
+    zastava.use();
+    zastava.setInt("texture1", 0);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    glBindVertexArray(0);
+
+
+    float stoneVertices[] = {
+            // positions          texture        normal
+            0.0f,  0.5f,  0.0f,  0.0f,  0.0f,  0.0f,  1.0f,  0.0f,
+            0.0f, -0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,
+            1.0f, -0.5f,  0.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f,
+
+            0.0f,  0.5f,  0.0f,  0.0f,  0.0f,  0.0f,  1.0f,  0.0f,
+            1.0f, -0.5f,  0.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f,
+            1.0f,  0.5f,  0.0f,  1.0f,  0.0f,   0.0f,  1.0f,  0.0f
+    };
+
+    glm::vec3 stonePosition[] = {
+            glm::vec3(4.0f, 0.4f, 7.0f),
+            glm::vec3(-5.6f, 1.8f, -6.2f),
+            glm::vec3(-5.0f, 1.0f, -1.0f),
+
+
+    };
+
+    unsigned int stoneVAO, stoneVBO;
+    glGenVertexArrays(1, &stoneVAO);
+    glGenBuffers(1, &stoneVBO);
+    glBindVertexArray(stoneVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, stoneVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(stoneVertices), stoneVertices, GL_STATIC_DRAW);
+
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(5 * sizeof(float)));
+    glBindVertexArray(0);
+
+    stbi_set_flip_vertically_on_load(false);
+    unsigned int bushTexture = loadTexture("resources/textures/pngwing.com.png");
+    stbi_set_flip_vertically_on_load(true);
     // draw in wireframe
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     // render loop
     // -----------
+    DirLight& dirLight = programState->dirLight;
     while (!glfwWindowShouldClose(window)) {
         // per-frame time logic
         // --------------------
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
+
+        dirLight.direction = glm::vec3(2.0f, -2.0f, 0.3f);
+        dirLight.ambient = glm::vec3(0.21f, 0.21f, 0.21f);
+        dirLight.diffuse = glm::vec3(1.0f, 1.0f, 1.0f);
+        dirLight.specular = glm::vec3(0.2f, 0.2f, 0.2f);
 
         // input
         // -----
@@ -310,9 +410,40 @@ int main() {
         glClearColor(programState->clearColor.r, programState->clearColor.g, programState->clearColor.b, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        zastava.use();
+        glm::mat4 model = glm::mat4(1.0f);
+        glm::mat4 view = programState->camera.GetViewMatrix();
+        glm::mat4 projection = glm::perspective(glm::radians(programState->camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        zastava.setMat4("view", view);
+        zastava.setMat4("projection", projection);
+
+        glBindVertexArray(flagVAO);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, flagTexture);
+        model = glm::translate(model, glm::vec3(0.0f, -5.0f, 0.0f));
+       //model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0, 0.0f, 1.0f));
+        zastava.setMat4("model", model);
+
+
+        zastava.setVec3("dirLight.direction", dirLight.direction);
+        zastava.setVec3("dirLight.ambient", dirLight.ambient);
+        zastava.setVec3("dirLight.diffuse", dirLight.diffuse);
+        zastava.setVec3("dirLight.specular", dirLight.specular);
+        zastava.setFloat("shininess", 64.0f);
+
+
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glBindVertexArray(0);
+
         // don't forget to enable shader before setting uniforms
         ourShader.use();
-        pointLight.position = glm::vec3(1.0 , 4.0f, 4.0 );
+        ourShader.setVec3("dirLight.direction", dirLight.direction);
+        ourShader.setVec3("dirLight.ambient", dirLight.ambient);
+        ourShader.setVec3("dirLight.diffuse", dirLight.diffuse);
+        ourShader.setVec3("dirLight.specular", dirLight.specular);
+        ourShader.setFloat("shininess", 32.0f);
+
+        pointLight.position = glm::vec3(1.0 , 0.72f, 3.0 );
         ourShader.setVec3("pointLight.position", pointLight.position);
         ourShader.setVec3("pointLight.ambient", pointLight.ambient);
         ourShader.setVec3("pointLight.diffuse", pointLight.diffuse);
@@ -323,9 +454,9 @@ int main() {
         ourShader.setVec3("viewPosition", programState->camera.Position);
         ourShader.setFloat("material.shininess", 32.0f);
         // view/projection transformations
-        glm::mat4 projection = glm::perspective(glm::radians(programState->camera.Zoom),
+        glm::mat4 projection1 = glm::perspective(glm::radians(programState->camera.Zoom),
                                                 (float) SCR_WIDTH / (float) SCR_HEIGHT, 0.1f, 100.0f);
-        glm::mat4 view = programState->camera.GetViewMatrix();
+        glm::mat4 view1 = programState->camera.GetViewMatrix();
         ourShader.setMat4("projection", projection);
         ourShader.setMat4("view", view);
 
@@ -337,19 +468,36 @@ int main() {
 
         // render the loaded model
         //prvo drvo
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model,
+        glm::mat4 modelDrvo = glm::mat4(1.0f);
+        modelDrvo = glm::translate(modelDrvo,
                                glm::vec3(10.0f, 0.74f, 1.0f)); // translate it down so it's at the center of the scene
-        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0, 0.0f, 1.0f));
-        model = glm::scale(model, glm::vec3(2.0f));    // it's a bit too big for our scene, so scale it down
-        ourShader.setMat4("model", model);
+        modelDrvo = glm::rotate(modelDrvo, glm::radians(90.0f), glm::vec3(0, 0.0f, 1.0f));
+        modelDrvo = glm::scale(modelDrvo, glm::vec3(2.0f));    // it's a bit too big for our scene, so scale it down
+        ourShader.setMat4("model", modelDrvo);
         ourModel.Draw(ourShader);
+
+        glm::mat4 modelRanger = glm::mat4(1.0f);
+        modelRanger = glm::translate(modelRanger,
+                                     glm::vec3(1.0f, 1.06f, -3.0f));
+        modelRanger = glm::rotate(modelRanger, glm::radians(-30.0f), glm::vec3( 0.0f, 1.0f, 0.0f));
+        modelRanger = glm::scale(modelRanger, glm::vec3(0.04f));    // it's a bit too big for our scene, so scale it down
+        ourShader.setMat4("model", modelRanger);
+        ranger.Draw(ourShader);
+
+        glm::mat4 modelCep = glm::mat4(1.0f);
+        modelCep = glm::translate(modelCep,
+                                  glm::vec3(3.0f, 1.1f, -2.0f));
+        modelCep = glm::rotate(modelCep, glm::radians(-90.0f), glm::vec3( 1.0f, 0.0f, 0.0f));
+        modelCep = glm::scale(modelCep, glm::vec3(0.005f));    // it's a bit too big for our scene, so scale it down
+        ourShader.setMat4("model", modelCep);
+        cep.Draw(ourShader);
 
         glm::mat4 modelDrvo2 = glm::mat4(1.0f);
         modelDrvo2 = glm::translate(modelDrvo2,
                                     glm::vec3(-5.0f, 0.4f, 1.0f)); // translate it down so it's at the center of the scene
          modelDrvo2 = glm::rotate(modelDrvo2, glm::radians(180.0f), glm::vec3(0, 1.0f, 0.0f));
         modelDrvo2 = glm::scale(modelDrvo2, glm::vec3(1.5f));    // it's a bit too big for our scene, so scale it down
+        ourShader.setVec3("dirLight.direction", -1.0f*dirLight.direction);
         ourShader.setMat4("model", modelDrvo2);
         drvo2.Draw(ourShader);
 
@@ -385,27 +533,14 @@ int main() {
         ourShader.setMat4("model", modelZbun);
         zbun.Draw(ourShader);
 
-        glm::mat4 modelRanger = glm::mat4(1.0f);
-        modelRanger = glm::translate(modelRanger,
-                                     glm::vec3(1.0f, 1.06f, -3.0f));
-        modelRanger = glm::rotate(modelRanger, glm::radians(-30.0f), glm::vec3( 0.0f, 1.0f, 0.0f));
-        modelRanger = glm::scale(modelRanger, glm::vec3(0.04f));    // it's a bit too big for our scene, so scale it down
-        ourShader.setMat4("model", modelRanger);
-        ranger.Draw(ourShader);
 
-        glm::mat4 modelCep = glm::mat4(1.0f);
-        modelCep = glm::translate(modelCep,
-                                  glm::vec3(3.0f, 1.1f, -2.0f));
-        modelCep = glm::rotate(modelCep, glm::radians(-90.0f), glm::vec3( 1.0f, 0.0f, 0.0f));
-        modelCep = glm::scale(modelCep, glm::vec3(0.005f));    // it's a bit too big for our scene, so scale it down
-        ourShader.setMat4("model", modelCep);
-        cep.Draw(ourShader);
 
         glm::mat4 modelRuksak = glm::mat4(1.0f);
         modelRuksak = glm::translate(modelRuksak,
                                   glm::vec3(-1.2f, 1.0f, 4.0f));
         modelRuksak = glm::rotate(modelRuksak, glm::radians(150.0f), glm::vec3( 0.0f, 1.0f, 0.0f));
-        modelRuksak = glm::scale(modelRuksak, glm::vec3(0.01f));    // it's a bit too big for our scene, so scale it down
+        modelRuksak = glm::scale(modelRuksak, glm::vec3(0.01f));
+        ourShader.setVec3("dirLight.direction", -1.0f*dirLight.direction);// it's a bit too big for our scene, so scale it down
         ourShader.setMat4("model", modelRuksak);
         Ruksak.Draw(ourShader);
 
@@ -425,13 +560,39 @@ int main() {
         ourShader.setMat4("model", modelPipBoy);
         pipBoy.Draw(ourShader);
 
+        glDisable(GL_CULL_FACE);
+        glBindVertexArray(stoneVAO);
+        glBindTexture(GL_TEXTURE_2D, bushTexture);
+
+        blending.use();
+        blending.setInt("texture1", 0);
+        blending.setMat4("projection", projection);
+        blending.setMat4("view", view);
+
+        blending.setVec3("dirLight.direction", dirLight.direction);
+        blending.setVec3("dirLight.ambient", dirLight.ambient);
+        blending.setVec3("dirLight.diffuse", dirLight.diffuse);
+        blending.setVec3("dirLight.specular", dirLight.specular);
+        blending.setFloat("shininess", 32.0f);
+
+        for(int i = 0; i < 3; i++) {
+            model = glm::mat4(1.0f);
+            model = glm::rotate(model, glm::radians(-60.0f), glm::vec3(0, 1, 0));
+            model = glm::translate(model, stonePosition[i]);
+            model = glm::scale(model, glm::vec3(0.8f));
+            blending.use();
+            blending.setMat4("model", model);
+            glDrawArrays(GL_TRIANGLES, 0, 6);
+        }
+        glEnable(GL_CULL_FACE);
+
 
         // skybox cube
 
         skyboxShader.use();
-        view[3][0] = 0; // Postavljam x translaciju na nulu
-        view[3][1] = 0; // Postavljam y translaciju na nulu
-        view[3][2] = 0; // postavljam z translaciju na nulu
+        view[3][0] = 0;
+        view[3][1] = 0;
+        view[3][2] = 0;
         view[3][3] = 0;
         skyboxShader.setMat4("view", view);
         skyboxShader.setMat4("projection", projection);
@@ -512,6 +673,40 @@ void mouse_callback(GLFWwindow *window, double xpos, double ypos) {
 // ----------------------------------------------------------------------
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset) {
     programState->camera.ProcessMouseScroll(yoffset);
+}
+
+unsigned int loadTexture(char const *path) {
+    unsigned int textureID;
+    glGenTextures(1, &textureID);
+
+    int width, height, nrComponents;
+    unsigned char *data = stbi_load(path, &width, &height, &nrComponents, 0);
+    if (data) {
+        GLenum format;
+        if (nrComponents == 1)
+            format = GL_RED;
+        else if (nrComponents == 3)
+            format = GL_RGB;
+        else if (nrComponents == 4)
+            format = GL_RGBA;
+
+        glBindTexture(GL_TEXTURE_2D, textureID);
+        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        stbi_image_free(data);
+    }
+    else {
+        std::cout << "Texture failed to load at path: " << path << std::endl;
+        stbi_image_free(data);
+    }
+
+    return textureID;
 }
 
 unsigned int loadCubemap(vector<std::string> faces)
